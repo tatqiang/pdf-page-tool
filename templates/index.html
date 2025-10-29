@@ -65,6 +65,8 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s;
+            display: block;
+            margin: 10px auto 0;
         }
         .btn:hover {
             background-color: #2980b9;
@@ -161,41 +163,54 @@
         const submitBtn = document.getElementById('submitBtn');
         const uploadForm = document.getElementById('uploadForm');
         
+        let fileSelected = false;
+        
         // Show file name when selected
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
+                fileSelected = true;
                 fileName.textContent = '✓ Selected: ' + fileInput.files[0].name;
                 submitBtn.style.display = 'block';
                 uploadArea.style.backgroundColor = '#d5f4e6';
+                uploadArea.style.cursor = 'default';
+                // Change text to show file is ready
+                uploadArea.querySelector('h3').textContent = 'File Ready to Upload';
+                uploadArea.querySelector('p').textContent = 'Click "Upload PDF" button below to continue';
             }
         });
         
-        // Click anywhere in upload area to select file
+        // Click anywhere in upload area to select file (only if no file selected)
         uploadArea.addEventListener('click', (e) => {
-            // Don't trigger if clicking the file input itself
-            if (e.target !== fileInput) {
+            // Don't trigger if file already selected or clicking the file input/button
+            if (!fileSelected && e.target !== fileInput && e.target !== submitBtn) {
                 fileInput.click();
             }
         });
         
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.style.backgroundColor = '#e8f4f8';
+            if (!fileSelected) {
+                uploadArea.style.backgroundColor = '#e8f4f8';
+            }
         });
         
         uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.backgroundColor = '#ecf0f1';
+            if (!fileSelected) {
+                uploadArea.style.backgroundColor = '#ecf0f1';
+            }
         });
         
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadArea.style.backgroundColor = '#ecf0f1';
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type === 'application/pdf') {
-                fileInput.files = files;
-                // Trigger change event to show file name
-                fileInput.dispatchEvent(new Event('change'));
+            if (!fileSelected) {
+                uploadArea.style.backgroundColor = '#ecf0f1';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type === 'application/pdf') {
+                    fileInput.files = files;
+                    // Trigger change event to show file name
+                    fileInput.dispatchEvent(new Event('change'));
+                }
             }
         });
     </script>

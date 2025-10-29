@@ -114,11 +114,12 @@
             <h3>Upload Your PDF File</h3>
             <p>Drag and drop your PDF here or click to browse</p>
             
-            <form action="/upload" method="post" enctype="multipart/form-data">
+            <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
                 <div class="file-input">
-                    <input type="file" name="file" accept=".pdf" required>
+                    <input type="file" name="file" id="fileInput" accept=".pdf" required>
                 </div>
-                <button type="submit" class="btn">Process PDF</button>
+                <p id="fileName" style="margin: 10px 0; color: #27ae60; font-weight: bold;"></p>
+                <button type="submit" class="btn" id="submitBtn">📤 Upload PDF</button>
             </form>
         </div>
         
@@ -155,9 +156,27 @@
     <script>
         // Drag and drop functionality
         const uploadArea = document.querySelector('.upload-area');
-        const fileInput = document.querySelector('input[type="file"]');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const submitBtn = document.getElementById('submitBtn');
+        const uploadForm = document.getElementById('uploadForm');
         
-        uploadArea.addEventListener('click', () => fileInput.click());
+        // Show file name when selected
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = '✓ Selected: ' + fileInput.files[0].name;
+                submitBtn.style.display = 'block';
+                uploadArea.style.backgroundColor = '#d5f4e6';
+            }
+        });
+        
+        // Click anywhere in upload area to select file
+        uploadArea.addEventListener('click', (e) => {
+            // Don't trigger if clicking the file input itself
+            if (e.target !== fileInput) {
+                fileInput.click();
+            }
+        });
         
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -175,6 +194,8 @@
             const files = e.dataTransfer.files;
             if (files.length > 0 && files[0].type === 'application/pdf') {
                 fileInput.files = files;
+                // Trigger change event to show file name
+                fileInput.dispatchEvent(new Event('change'));
             }
         });
     </script>

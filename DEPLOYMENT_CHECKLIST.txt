@@ -1,0 +1,52 @@
+================================================================================
+RENDER.COM DEPLOYMENT - QUICK CHECKLIST
+================================================================================
+
+✅ FILES READY FOR DEPLOYMENT:
+------------------------------
+✓ web_app.py          - Flask web application
+✓ pdf_pages.py        - PDF processing engine  
+✓ requirements.txt    - Python dependencies
+✓ Procfile           - Render start command
+✓ runtime.txt        - Python version
+✓ .gitignore         - Git ignore rules
+✓ README_GITHUB.md   - GitHub README
+✓ templates/index.html    - Upload page
+✓ templates/options.html  - Options page
+✓ uploads/.gitkeep   - Upload folder marker
+✓ processed/.gitkeep - Processed folder marker
+
+📋 DEPLOYMENT STEPS (10 minutes):
+----------------------------------
+1. □ Create GitHub account (if needed)
+2. □ Create new repository: "pdf-page-tool"
+3. □ Upload all files to GitHub
+4. □ Create Render.com account
+5. □ Connect GitHub repository
+6. □ Deploy web service (auto-detects Python)
+7. □ Wait for build to complete
+8. □ Get your live URL!
+
+🌐 YOUR APP WILL BE AT:
+-----------------------
+https://your-app-name.onrender.com
+
+💡 QUICK TIP:
+-------------
+Use UptimeRobot.com (free) to ping your app every 15 minutes
+to keep it awake and avoid the 30-second wake-up delay!
+
+📖 FULL GUIDE:
+--------------
+See RENDER_DEPLOYMENT.txt for detailed step-by-step instructions
+
+🎉 BENEFITS:
+------------
+✅ Free forever (no 3-month limit like PythonAnywhere!)
+✅ Automatic deployments when you push to GitHub
+✅ SSL certificate included (HTTPS)
+✅ Custom domain support
+✅ 750 hours/month (more than enough!)
+✅ Professional hosting platform
+
+================================================================================

@@ -1,0 +1,268 @@
+================================================================================
+PDF Page Number Tool - Render.com Deployment Guide
+================================================================================
+
+🎉 FREE FOREVER HOSTING - NO 3-MONTH LIMIT!
+
+WHAT YOU NEED:
+--------------
+1. GitHub account (free) - https://github.com
+2. Render.com account (free) - https://render.com
+3. Your PDF tool files (already prepared!)
+
+================================================================================
+STEP 1: CREATE GITHUB REPOSITORY
+================================================================================
+
+1. Go to https://github.com and sign in (or create account)
+
+2. Click "+" in top right → "New repository"
+   - Repository name: pdf-page-tool
+   - Description: PDF Page Number Tool - Add page numbers and fix TOC
+   - Public or Private: Your choice (both work)
+   - ✅ Initialize with README
+   - Click "Create repository"
+
+3. Upload your files to GitHub:
+
+   Option A: Using GitHub Web Interface (Easier)
+   ---------------------------------------------
+   - Click "uploading an existing file" link
+   - Drag and drop these files:
+     ✓ web_app.py
+     ✓ pdf_pages.py
+     ✓ requirements.txt
+     ✓ Procfile
+     ✓ runtime.txt
+     ✓ .gitignore
+     
+   - Upload templates folder:
+     ✓ templates/index.html
+     ✓ templates/options.html
+     
+   - Upload empty folders with .gitkeep:
+     ✓ uploads/.gitkeep
+     ✓ processed/.gitkeep
+     
+   - Click "Commit changes"
+
+   Option B: Using Git Command Line (Advanced)
+   ------------------------------------------
+   Open terminal in your pdf_page folder:
+   
+   git init
+   git add .
+   git commit -m "Initial commit: PDF Page Number Tool"
+   git branch -M main
+   git remote add origin https://github.com/YOUR_USERNAME/pdf-page-tool.git
+   git push -u origin main
+
+================================================================================
+STEP 2: DEPLOY TO RENDER.COM
+================================================================================
+
+1. Go to https://render.com and sign up (use GitHub to sign in - easiest!)
+
+2. Click "New +" button → "Web Service"
+
+3. Connect your GitHub repository:
+   - Click "Connect account" if first time
+   - Find "pdf-page-tool" in the list
+   - Click "Connect"
+
+4. Configure the web service:
+   
+   Name: pdf-page-tool (or your preferred name)
+   Region: Choose closest to you (Oregon, Frankfurt, Singapore, etc.)
+   Branch: main
+   
+   Root Directory: (leave blank)
+   Runtime: Python 3
+   
+   Build Command: pip install -r requirements.txt
+   Start Command: gunicorn web_app:app
+   
+   Instance Type: Free
+   
+   ⚠️ IMPORTANT: Add Environment Variables (if needed):
+   Click "Advanced" → "Add Environment Variable"
+   (Currently not needed, but keep in mind for future)
+
+5. Click "Create Web Service"
+
+6. Wait 3-5 minutes for deployment...
+   - You'll see build logs
+   - First deployment takes longer (installing dependencies)
+   - When you see "Your service is live 🎉" - it's ready!
+
+================================================================================
+STEP 3: GET YOUR LIVE URL
+================================================================================
+
+After deployment completes:
+
+Your app will be at: https://pdf-page-tool.onrender.com
+(or whatever name you chose)
+
+You can:
+- ✅ Share this URL with anyone
+- ✅ Add a custom domain (in Settings)
+- ✅ View logs (click "Logs" tab)
+- ✅ See usage metrics (click "Metrics" tab)
+
+================================================================================
+IMPORTANT: FREE TIER LIMITATIONS & TIPS
+================================================================================
+
+FREE TIER INCLUDES:
+✅ 750 hours/month (enough for 24/7!)
+✅ Automatic deployments when you push to GitHub
+✅ SSL certificate (HTTPS)
+✅ Custom domain support
+✅ No credit card required
+✅ No 3-month expiration!
+
+⚠️ IMPORTANT LIMITATION:
+- App "sleeps" after 15 minutes of inactivity
+- Takes ~30 seconds to wake up when someone visits
+- First request after sleep will be slow, then normal
+
+💡 TIPS TO KEEP IT AWAKE:
+1. Use a service like UptimeRobot.com (free) to ping your app every 15 min
+2. Upgrade to paid ($7/month) for always-on service
+3. Accept the 30-second wake-up time (most users won't mind)
+
+================================================================================
+STEP 4: TEST YOUR APP
+================================================================================
+
+1. Visit your Render URL: https://your-app-name.onrender.com
+
+2. Test the upload:
+   - Upload a PDF with [[p-x]] or [[pg-xofy]] tags
+   - Select format options
+   - Click "Process PDF"
+   - Download the result
+
+3. Check if everything works!
+
+================================================================================
+STEP 5: UPDATE YOUR APP (FUTURE CHANGES)
+================================================================================
+
+To update your live app:
+
+1. Make changes to your files locally
+2. Push to GitHub:
+   
+   git add .
+   git commit -m "Update: description of changes"
+   git push
+
+3. Render automatically detects the push and redeploys!
+4. Wait 2-3 minutes for redeployment
+5. Changes are live!
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If deployment fails:
+
+1. Check Build Logs in Render dashboard
+   - Click "Logs" tab
+   - Look for error messages
+
+2. Common issues:
+   
+   ❌ "requirements.txt not found"
+   → Make sure requirements.txt is in root folder
+   
+   ❌ "Module not found: flask"
+   → Check requirements.txt has correct packages
+   
+   ❌ "Application failed to start"
+   → Check Procfile has correct command
+   → Verify web_app.py has no syntax errors
+   
+   ❌ "Port binding failed"
+   → Make sure app.run() uses port from environment
+   → Render provides PORT automatically
+
+3. Check application logs:
+   - Click "Logs" tab in Render
+   - Look for Python errors
+   - Check if Flask app started correctly
+
+4. Test locally first:
+   cd c:\pwa\program\pdf_page
+   python web_app.py
+   
+   If it works locally but not on Render:
+   - Check all files are uploaded to GitHub
+   - Verify requirements.txt has all dependencies
+
+================================================================================
+COMPARISON: RENDER vs PYTHONANYWHERE
+================================================================================
+
+RENDER.COM (Recommended):
+✅ Free forever (no 3-month limit!)
+✅ 750 hours/month free
+✅ Automatic deployments from GitHub
+✅ Custom domains free
+✅ SSL included
+❌ Sleeps after 15 min inactivity
+❌ 30-second wake-up time
+
+PYTHONANYWHERE:
+✅ Always on (no sleep)
+✅ Simple file upload
+❌ 3-month account expiration
+❌ Only 100 CPU seconds/day
+❌ 512 MB storage limit
+❌ Manual file updates
+
+================================================================================
+YOUR DEPLOYMENT FILES
+================================================================================
+
+✓ requirements.txt   - Python packages to install
+✓ Procfile          - Command to start your app
+✓ runtime.txt       - Python version to use
+✓ .gitignore        - Files to exclude from Git
+✓ web_app.py        - Your Flask application
+✓ pdf_pages.py      - PDF processing logic
+✓ templates/        - HTML templates
+✓ uploads/          - Temporary upload folder
+✓ processed/        - Processed files folder
+
+All files are ready! Just follow the steps above.
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. ✅ Create GitHub repository
+2. ✅ Upload all files to GitHub
+3. ✅ Sign up for Render.com
+4. ✅ Connect GitHub repo to Render
+5. ✅ Deploy and get your live URL!
+6. 🎉 Share your URL with users!
+
+YOUR APP URL WILL BE:
+https://your-chosen-name.onrender.com
+
+FREE FOREVER - NO CREDIT CARD - NO 3-MONTH LIMIT!
+
+================================================================================
+NEED HELP?
+================================================================================
+
+- Render Docs: https://render.com/docs
+- Render Community: https://community.render.com
+- GitHub Help: https://docs.github.com
+
+================================================================================
+Good luck! Your PDF tool will be live in about 10 minutes! 🚀
+================================================================================

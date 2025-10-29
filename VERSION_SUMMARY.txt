@@ -1,0 +1,191 @@
+================================================================================
+                    PDF PAGE NUMBER TOOL - VERSION 3.1
+                         FEATURE SUMMARY
+================================================================================
+
+VERSION: 3.1
+RELEASE DATE: October 2025
+WHAT'S NEW: Simplified functionality - removed MS Word auto-detection
+
+================================================================================
+                           CURRENT FEATURES
+================================================================================
+
+1. PLACEHOLDER REPLACEMENT
+   Replaces {{p-x}}, {{pg-xofy}}, etc. with actual page numbers
+   
+2. TABLE OF CONTENTS FIXING
+   Updates TOC page numbers using PDF link detection
+   
+3. CUSTOM PAGE NUMBERING
+   Adds page numbers to pages without placeholders
+   Customizable format, position, distance, and size
+
+================================================================================
+                              FEATURES OVERVIEW
+================================================================================
+
+1. REPLACE {{TAG}} PLACEHOLDERS
+   Syntax: {{p-x}}, {{p-x/y}}, {{pg-xofy}}, etc.
+   Example: {{pg-xofy}} → "Page 5 of 28"
+   
+2. FIX TABLE OF CONTENTS
+   Detection: Automatic TOC page finding
+   Method: Uses PDF hyperlinks for accuracy
+   Updates: All TOC entries with correct page numbers
+   
+3. ADD CUSTOMIZABLE PAGE NUMBERS
+   Format: 7 options (None, x, x/y, Page x, etc.)
+   Position: 6 options (Bottom/Top, Left/Center/Right)
+   Distance: 5 options (10pt to 70pt margins)
+   Text Size: 5 options (7pt to 14pt)
+   Total Combinations: 901 options
+
+================================================================================
+                            PROCESSING WORKFLOW
+================================================================================
+
+STEP 1: Replace {{tag}} Placeholders
+        ↓
+STEP 2: Fix Table of Contents
+        ↓
+STEP 3: Add Page Numbers to Blank Pages (User Choice)
+        ↓
+STEP 4: Save Output (original_filename_complete.pdf)
+
+================================================================================
+                              USAGE EXAMPLES
+================================================================================
+
+USE CASE 1: Only Replace Tags and Fix TOC
+------------------------------------------
+Command: python pdf_pages.py document.pdf
+When prompted for format: Enter 0 (None)
+Result: Tags replaced, TOC fixed, no new page numbers added
+
+Summary Output:
+  • Replaced page number tags on 8 pages
+  • Updated 15 TOC entries
+  • Added page numbers to 0 additional pages
+
+USE CASE 2: Replace Tags + Add Page Numbers
+--------------------------------------------
+Command: python pdf_pages.py document.pdf
+When prompted:
+  - Format: 6 (Page x of y)
+  - Position: 1 (Bottom Right)
+  - Distance: 3 (Normal)
+  - Size: 3 (Normal)
+
+Result: Tags replaced + new page numbers on blank pages
+
+Summary Output:
+  • Replaced page number tags on 8 pages
+  • Updated 15 TOC entries
+  • Added page numbers to 12 additional pages
+
+USE CASE 3: Just Add Page Numbers
+----------------------------------
+Command: python pdf_pages.py blank_document.pdf
+Result: No tags to replace, adds page numbers to all pages
+
+Summary Output:
+  • Replaced page number tags on 0 pages
+  • Updated 0 TOC entries
+  • Added page numbers to 28 additional pages
+
+================================================================================
+                             FILES INCLUDED
+================================================================================
+
+EXECUTABLES
+-----------
+pdf_pages.bat          - Windows launcher (drag & drop)
+pdf_pages.py           - Main Python script
+
+DOCUMENTATION
+-------------
+README.txt             - Complete user guide (plain text)
+QUICK_GUIDE.md         - Quick reference guide
+MS_WORD_AUTO_FIX.md    - Information about removed feature
+WORKFLOW.md            - Complete workflow explanation
+DISTANCE_GUIDE.md      - Distance options guide
+VISUAL_GUIDE.md        - Visual position reference
+VERSION_SUMMARY.txt    - This file
+
+DIAGNOSTIC TOOLS
+----------------
+check_python.bat       - Python installation checker
+
+================================================================================
+                          SYSTEM REQUIREMENTS
+================================================================================
+
+REQUIRED
+--------
+- Windows Operating System
+- Python 3.x
+- PyMuPDF (fitz) library
+
+INSTALLATION
+------------
+1. Install Python from https://www.python.org/downloads/
+   (Check "Add Python to PATH" during installation)
+2. Install PyMuPDF: pip install PyMuPDF
+3. Done!
+
+TROUBLESHOOTING
+---------------
+If "Python not found" error:
+1. Run check_python.bat for diagnosis
+2. Follow the provided solutions
+3. See README.txt for detailed troubleshooting
+
+================================================================================
+                            VERSION HISTORY
+================================================================================
+
+VERSION 3.1 (October 2025) - Current
+-------------------------------------
+🔄 REMOVED: MS Word page number auto-detection feature
+📝 SIMPLIFIED: Tool now focuses on tag replacement and manual page numbering
+✨ IMPROVED: Cleaner workflow with fewer automatic changes
+
+VERSION 3.0 (January 2025)
+---------------------------
+✨ NEW: MS Word page number auto-detection and correction (REMOVED in v3.1)
+
+VERSION 2.0
+-----------
+✨ NEW: Customizable page numbers for blank pages
+- 7 format options (0=None to 6=Page x of y)
+- 6 position options (Bottom/Top, Left/Center/Right)
+- 5 distance options (10pt to 70pt margins)
+- 5 text size options (7pt to 14pt)
+✨ NEW: Enhanced Python detection in batch file
+✨ NEW: check_python.bat diagnostic tool
+✨ NEW: Comprehensive documentation
+
+VERSION 1.0
+-----------
+✨ Initial release
+- {{tag}} placeholder replacement
+- Table of Contents fixing
+- Basic functionality
+
+================================================================================
+                              SUPPORTED TAGS
+================================================================================
+
+| Syntax       | Display    | Example     |
+|-------------|-----------|-------------|
+| {{p-x}}     | x         | 5           |
+| {{p-x/y}}   | x / y     | 5 / 28      |
+| {{p-xofy}}  | x of y    | 5 of 28     |
+| {{pg-x}}    | Page x    | Page 5      |
+| {{pg-x/y}}  | Page x/y  | Page 5/28   |
+| {{pg-xofy}} | Page x of y | Page 5 of 28 |
+
+Use these tags in your document headers/footers before converting to PDF.
+
+================================================================================

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Page Number Tool - Web Version</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            background-color: #ecf0f1;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #2980b9;
+            background-color: #e8f4f8;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        .file-input {
+            margin: 20px 0;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .features {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .features ul {
+            color: #555;
+            line-height: 1.6;
+        }
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 PDF Page Number Tool</h1>
+        <p class="subtitle">Web Version - No Installation Required!</p>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-error">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="upload-area">
+            <div class="upload-icon">📁</div>
+            <h3>Upload Your PDF File</h3>
+            <p>Drag and drop your PDF here or click to browse</p>
+            
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <div class="file-input">
+                    <input type="file" name="file" accept=".pdf" required>
+                </div>
+                <button type="submit" class="btn">Process PDF</button>
+            </form>
+        </div>
+        
+        <div class="features">
+            <h3>✨ What This Tool Does:</h3>
+            <ul>
+                <li><strong>Replace [[tag]] placeholders</strong> - Converts [[p-x]], [[pg-xofy]] to actual page numbers</li>
+                <li><strong>Fix Table of Contents</strong> - Updates TOC page numbers automatically</li>
+                <li><strong>Add custom page numbers</strong> - Add numbers to pages without placeholders</li>
+                <li><strong>36 format combinations</strong> - Choose format, position, distance, and size</li>
+                <li><strong>Safe operation</strong> - Never modifies your original file</li>
+            </ul>
+            
+            <h3>🔢 Supported Tag Formats:</h3>
+            <ul>
+                <li>[[p-x]] → 5</li>
+                <li>[[p-x/y]] → 5 / 28</li>
+                <li>[[p-xofy]] → 5 of 28</li>
+                <li>[[pg-x]] → Page 5</li>
+                <li>[[pg-x/y]] → Page 5/28</li>
+                <li>[[pg-xofy]] → Page 5 of 28</li>
+            </ul>
+            
+            <h3>💡 How to Use:</h3>
+            <ol>
+                <li>Upload your PDF file above</li>
+                <li>Choose your page numbering options</li>
+                <li>Download the processed PDF</li>
+                <li>That's it! No software to install.</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        // Drag and drop functionality
+        const uploadArea = document.querySelector('.upload-area');
+        const fileInput = document.querySelector('input[type="file"]');
+        
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#e8f4f8';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.backgroundColor = '#ecf0f1';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#ecf0f1';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                fileInput.files = files;
+            }
+        });
+    </script>
+</body>
+</html>

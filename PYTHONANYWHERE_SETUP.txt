@@ -1,0 +1,127 @@
+================================================================================
+PDF Page Number Tool - PythonAnywhere Deployment Guide
+================================================================================
+
+STEP 1: UPLOAD FILES
+--------------------
+1. Click "Files" tab at the top
+2. Navigate to your home directory: /home/snith/
+3. Create a new folder called "pdf_tool"
+4. Upload these files to /home/snith/pdf_tool/:
+   - web_app.py
+   - pdf_pages.py
+   
+5. Create subfolder: /home/snith/pdf_tool/templates/
+6. Upload to templates folder:
+   - index.html
+   - options.html
+
+STEP 2: INSTALL DEPENDENCIES
+-----------------------------
+1. Click "Consoles" tab at the top
+2. Click ">>> Python" to open a Python console
+3. In the console, type these commands one by one:
+
+   import subprocess
+   subprocess.run(["pip3", "install", "--user", "flask", "pymupdf"])
+
+OR use Bash console:
+   pip3 install --user flask pymupdf
+
+STEP 3: CREATE WEB APP
+----------------------
+1. Click "Web" tab at the top
+2. Click "Add a new web app"
+3. Choose "Manual configuration"
+4. Select "Python 3.10" (or latest Python 3.x)
+5. Click through to create the app
+
+STEP 4: CONFIGURE WEB APP
+--------------------------
+After creating the web app, you'll see a configuration page:
+
+1. Scroll to "Code" section:
+   - Source code: /home/snith/pdf_tool
+   - WSGI configuration file: Click on the link (it will be something like:
+     /var/www/snith_pythonanywhere_com_wsgi.py)
+
+2. Edit WSGI file - REPLACE ALL CONTENT with this:
+
+---START COPYING FROM HERE---
+import sys
+import os
+
+# Add your project directory to the sys.path
+project_home = '/home/snith/pdf_tool'
+if project_home not in sys.path:
+    sys.path = [project_home] + sys.path
+
+# Set working directory
+os.chdir(project_home)
+
+# Import flask app
+from web_app import app as application
+---END COPYING HERE---
+
+3. Click "Save" button at the top
+
+STEP 5: CONFIGURE STATIC FILES (Optional but recommended)
+----------------------------------------------------------
+Scroll to "Static files" section and add:
+URL: /static/
+Directory: /home/snith/pdf_tool/static/
+
+STEP 6: RELOAD WEB APP
+----------------------
+1. Scroll to the top of the Web tab
+2. Click the big green "Reload" button
+3. Your app should now be live at: https://snith.pythonanywhere.com
+
+STEP 7: CREATE UPLOAD DIRECTORY
+--------------------------------
+1. Go back to "Files" tab
+2. Create folder: /home/snith/pdf_tool/uploads/
+3. Create folder: /home/snith/pdf_tool/processed/
+
+TROUBLESHOOTING
+---------------
+If you see errors:
+
+1. Check error log:
+   - Go to "Web" tab
+   - Scroll to "Log files"
+   - Click on error.log to see what went wrong
+
+2. Common issues:
+   - ModuleNotFoundError: Run pip3 install again
+   - Permission error: Make sure directories are in /home/snith/
+   - Import error: Check WSGI file configuration
+
+3. Check console:
+   - Open a Bash console
+   - cd /home/snith/pdf_tool
+   - python3 web_app.py (to test locally)
+
+YOUR WEB APP URL
+----------------
+After setup, your app will be available at:
+https://snith.pythonanywhere.com
+
+You can share this URL with anyone!
+
+IMPORTANT NOTES
+---------------
+- Free tier has 100 seconds CPU time per day
+- Files are limited to 512 MB
+- Your app goes to sleep after inactivity (reloads automatically)
+- Remember to click "Reload" button after any code changes
+
+NEXT STEPS
+----------
+1. Test the upload functionality
+2. Try processing a PDF with [[tag]] placeholders
+3. Share the URL with users!
+
+================================================================================
+For help: https://help.pythonanywhere.com/
+================================================================================

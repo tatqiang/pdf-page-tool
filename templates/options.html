@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Processing Options - PDF Page Number Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .file-info {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #27ae60;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+        }
+        .option.selected {
+            border-color: #3498db;
+            background-color: #e3f2fd;
+        }
+        .option-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .option-description {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .option-example {
+            color: #3498db;
+            font-family: monospace;
+            margin-top: 5px;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 30px auto 0;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .preview {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .preview-box {
+            border: 2px solid #ddd;
+            padding: 40px 20px;
+            margin: 15px auto;
+            max-width: 400px;
+            position: relative;
+            background: white;
+        }
+        .preview-number {
+            color: #3498db;
+            font-weight: bold;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        .back-link {
+            color: #3498db;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Upload</a>
+        
+        <h1>📄 Configure Your PDF Processing</h1>
+        
+        <div class="file-info">
+            <strong>File:</strong> {{ filename }}<br>
+            <strong>Pages:</strong> {{ total_pages }}<br>
+            {% if placeholders_found %}
+                <strong>Found placeholders:</strong> {{ placeholders_found|join(', ') }}<br>
+            {% endif %}
+            {% if has_toc %}
+                <strong>Table of Contents:</strong> Detected ✓<br>
+            {% endif %}
+        </div>
+        
+        <form action="/process" method="post" id="optionsForm">
+            <input type="hidden" name="input_path" value="{{ input_path }}">
+            <input type="hidden" name="filename" value="{{ filename }}">
+            
+            <!-- Format Selection -->
+            <div class="section">
+                <h3>1. Page Number Format</h3>
+                <div class="option-grid">
+                    <div class="option" data-option="format" data-value="0">
+                        <div class="option-title">None</div>
+                        <div class="option-description">Skip adding page numbers</div>
+                        <div class="option-example">Only replace {{tags}} and fix TOC</div>
+                    </div>
+                    <div class="option" data-option="format" data-value="1">
+                        <div class="option-title">Simple Number</div>
+                        <div class="option-description">Just the page number</div>
+                        <div class="option-example">5</div>
+                    </div>
+                    <div class="option" data-option="format" data-value="2">
+                        <div class="option-title">Number / Total</div>
+                        <div class="option-description">Compact format</div>
+                        <div class="option-example">5 / 28</div>
+                    </div>
+                    <div class="option" data-option="format" data-value="3">
+                        <div class="option-title">Number of Total</div>
+                        <div class="option-description">Standard format</div>
+                        <div class="option-example">5 of 28</div>
+                    </div>
+                    <div class="option" data-option="format" data-value="4">
+                        <div class="option-title">Page Number</div>
+                        <div class="option-description">With "Page" prefix</div>
+                        <div class="option-example">Page 5</div>
+                    </div>
+                    <div class="option" data-option="format" data-value="5">
+                        <div class="option-title">Page Number/Total</div>
+                        <div class="option-description">Compact with prefix</div>
+                        <div class="option-example">Page 5/28</div>
+                    </div>
+                    <div class="option" data-option="format" data-value="6">
+                        <div class="option-title">Page Number of Total</div>
+                        <div class="option-description">Professional format ⭐</div>
+                        <div class="option-example">Page 5 of 28</div>
+                    </div>
+                </div>
+                <input type="hidden" name="format" id="format" value="6">
+            </div>
+            
+            <!-- Position Selection -->
+            <div class="section" id="positionSection">
+                <h3>2. Position on Page</h3>
+                <div class="option-grid">
+                    <div class="option" data-option="position" data-value="4">
+                        <div class="option-title">Top Left</div>
+                        <div class="option-description">Academic papers</div>
+                    </div>
+                    <div class="option" data-option="position" data-value="5">
+                        <div class="option-title">Top Center</div>
+                        <div class="option-description">Presentations</div>
+                    </div>
+                    <div class="option" data-option="position" data-value="6">
+                        <div class="option-title">Top Right</div>
+                        <div class="option-description">Modern reports</div>
+                    </div>
+                    <div class="option" data-option="position" data-value="3">
+                        <div class="option-title">Bottom Left</div>
+                        <div class="option-description">Technical manuals</div>
+                    </div>
+                    <div class="option" data-option="position" data-value="2">
+                        <div class="option-title">Bottom Center</div>
+                        <div class="option-description">Books, magazines ⭐</div>
+                    </div>
+                    <div class="option" data-option="position" data-value="1">
+                        <div class="option-title">Bottom Right</div>
+                        <div class="option-description">Business reports ⭐</div>
+                    </div>
+                </div>
+                <input type="hidden" name="position" id="position" value="1">
+            </div>
+            
+            <!-- Distance Selection -->
+            <div class="section" id="distanceSection">
+                <h3>3. Distance from Edge</h3>
+                <div class="option-grid">
+                    <div class="option" data-option="distance" data-value="1">
+                        <div class="option-title">Very Close</div>
+                        <div class="option-description">10pts - Maximize space</div>
+                    </div>
+                    <div class="option" data-option="distance" data-value="2">
+                        <div class="option-title">Close</div>
+                        <div class="option-description">20pts - Modern minimal</div>
+                    </div>
+                    <div class="option" data-option="distance" data-value="3">
+                        <div class="option-title">Normal</div>
+                        <div class="option-description">30pts - Standard ⭐</div>
+                    </div>
+                    <div class="option" data-option="distance" data-value="4">
+                        <div class="option-title">Far</div>
+                        <div class="option-description">50pts - Professional</div>
+                    </div>
+                    <div class="option" data-option="distance" data-value="5">
+                        <div class="option-title">Very Far</div>
+                        <div class="option-description">70pts - Formal</div>
+                    </div>
+                </div>
+                <input type="hidden" name="distance" id="distance" value="3">
+            </div>
+            
+            <!-- Size Selection -->
+            <div class="section" id="sizeSection">
+                <h3>4. Text Size</h3>
+                <div class="option-grid">
+                    <div class="option" data-option="size" data-value="1">
+                        <div class="option-title">Very Small</div>
+                        <div class="option-description">7pt - Minimal</div>
+                    </div>
+                    <div class="option" data-option="size" data-value="2">
+                        <div class="option-title">Small</div>
+                        <div class="option-description">8pt - Subtle</div>
+                    </div>
+                    <div class="option" data-option="size" data-value="3">
+                        <div class="option-title">Normal</div>
+                        <div class="option-description">10pt - Standard ⭐</div>
+                    </div>
+                    <div class="option" data-option="size" data-value="4">
+                        <div class="option-title">Large</div>
+                        <div class="option-description">12pt - Easy to read</div>
+                    </div>
+                    <div class="option" data-option="size" data-value="5">
+                        <div class="option-title">Very Large</div>
+                        <div class="option-description">14pt - Maximum visibility</div>
+                    </div>
+                </div>
+                <input type="hidden" name="size" id="size" value="3">
+            </div>
+            
+            <!-- Preview -->
+            <div class="preview" id="preview">
+                <h3>📖 Preview</h3>
+                <div class="preview-box" id="previewBox">
+                    <div style="color: #ccc; margin-bottom: 20px;">[Your Document Content]</div>
+                    <div class="preview-number" id="previewNumber">Page 5 of 28</div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">🚀 Process PDF</button>
+        </form>
+    </div>
+    
+    <script>
+        // Option selection handling
+        const options = document.querySelectorAll('.option');
+        const hiddenInputs = {
+            format: document.getElementById('format'),
+            position: document.getElementById('position'),
+            distance: document.getElementById('distance'),
+            size: document.getElementById('size')
+        };
+        
+        // Initialize default selections
+        updateSelections();
+        
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                const optionType = option.dataset.option;
+                const value = option.dataset.value;
+                
+                // Remove selected class from siblings
+                document.querySelectorAll(`[data-option="${optionType}"]`).forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                option.classList.add('selected');
+                
+                // Update hidden input
+                hiddenInputs[optionType].value = value;
+                
+                // Show/hide position section based on format
+                if (optionType === 'format') {
+                    const positionSection = document.getElementById('positionSection');
+                    const distanceSection = document.getElementById('distanceSection');
+                    const sizeSection = document.getElementById('sizeSection');
+                    
+                    if (value === '0') {
+                        positionSection.style.display = 'none';
+                        distanceSection.style.display = 'none';
+                        sizeSection.style.display = 'none';
+                    } else {
+                        positionSection.style.display = 'block';
+                        distanceSection.style.display = 'block';
+                        sizeSection.style.display = 'block';
+                    }
+                }
+                
+                updatePreview();
+            });
+        });
+        
+        function updateSelections() {
+            // Set initial selections
+            Object.keys(hiddenInputs).forEach(type => {
+                const value = hiddenInputs[type].value;
+                const option = document.querySelector(`[data-option="${type}"][data-value="${value}"]`);
+                if (option) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            // Handle format 0 case
+            if (hiddenInputs.format.value === '0') {
+                document.getElementById('positionSection').style.display = 'none';
+                document.getElementById('distanceSection').style.display = 'none';
+                document.getElementById('sizeSection').style.display = 'none';
+            }
+            
+            updatePreview();
+        }
+        
+        function updatePreview() {
+            const format = hiddenInputs.format.value;
+            const position = hiddenInputs.position.value;
+            const previewBox = document.getElementById('previewBox');
+            const previewNumber = document.getElementById('previewNumber');
+            
+            // Format examples
+            const formatExamples = {
+                '0': '',
+                '1': '5',
+                '2': '5 / 28', 
+                '3': '5 of 28',
+                '4': 'Page 5',
+                '5': 'Page 5/28',
+                '6': 'Page 5 of 28'
+            };
+            
+            if (format === '0') {
+                previewNumber.textContent = 'No page numbers will be added';
+                previewNumber.style.position = 'static';
+                return;
+            }
+            
+            previewNumber.textContent = formatExamples[format];
+            
+            // Position the preview number
+            previewNumber.style.position = 'absolute';
+            switch(position) {
+                case '1': // bottom-right
+                    previewNumber.style.bottom = '10px';
+                    previewNumber.style.right = '10px';
+                    previewNumber.style.left = 'auto';
+                    previewNumber.style.top = 'auto';
+                    break;
+                case '2': // bottom-center
+                    previewNumber.style.bottom = '10px';
+                    previewNumber.style.left = '50%';
+                    previewNumber.style.transform = 'translateX(-50%)';
+                    previewNumber.style.right = 'auto';
+                    previewNumber.style.top = 'auto';
+                    break;
+                case '3': // bottom-left
+                    previewNumber.style.bottom = '10px';
+                    previewNumber.style.left = '10px';
+                    previewNumber.style.right = 'auto';
+                    previewNumber.style.top = 'auto';
+                    break;
+                case '4': // top-left
+                    previewNumber.style.top = '10px';
+                    previewNumber.style.left = '10px';
+                    previewNumber.style.right = 'auto';
+                    previewNumber.style.bottom = 'auto';
+                    break;
+                case '5': // top-center
+                    previewNumber.style.top = '10px';
+                    previewNumber.style.left = '50%';
+                    previewNumber.style.transform = 'translateX(-50%)';
+                    previewNumber.style.right = 'auto';
+                    previewNumber.style.bottom = 'auto';
+                    break;
+                case '6': // top-right
+                    previewNumber.style.top = '10px';
+                    previewNumber.style.right = '10px';
+                    previewNumber.style.left = 'auto';
+                    previewNumber.style.bottom = 'auto';
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
